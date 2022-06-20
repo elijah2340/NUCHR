@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% load static %}
+{{ form.media }}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="description" content="">
+        <title>Register</title>
+		
+		<!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+		
+		<!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+		
+		<!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+
+		<!-- Main CSS -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <script src="{% static 'js/script.js' %}"></script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="{% static 'js/html5shiv.min.js' %}"></script>
+			<script src="{% static 'js/respond.min.js' %}"></script>
+		<![endif]-->
+    </head>
+    <body>
+
+	<section class="section-content padding-y">
+
+<!-- ============================ COMPONENT REGISTER   ================================= -->
+	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+      <article class="card-body">
+		  {% include 'includes/alert.html' %}
+		<header class="mb-4"><h4 class="card-title">Register</h4></header>
+		<ol>
+                        <li>{{ form.errors }}</li>
+                    </ol>
+                    <form action="{% url 'register' %}" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Title<span class="text-danger">*</span></label>
+                                    {{ form.title }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">First Name <span class="text-danger">*</span></label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Middle Name</label>
+                                    {{ form.middle_name }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label >Surname<span class="text-danger">*</span></label>
+					                {{ form.surname }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Email <span class="text-danger">*</span></label>
+                                    {{ form.email }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Phone Number <span class="text-danger">*</span></label>
+                                    {{ profile_form.phone_number }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Staff NO<span class="text-danger">*</span ></label>
+					                {{ form.staff_no }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">IPPS NO<span class="text-danger">*</span></label>
+                                    {{ form.ipps_no }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Gender<span class="text-danger">*</span></label>
+					                {{ form.gender }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Grade Level<span class="text-danger">*</span></label>
+					                {{ form.grade_level }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Step <span class="text-danger">*</span></label>
+                                    {{ form.step }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Date of Birth <span class="text-danger">*</span></label>
+                                    {{ form.date_of_birth }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Date of First Appointment<span class="text-danger">*</span></label>
+					                {{ form.date_of_first_appointment }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Date of First Appointment NUC<span class="text-danger">*</span></label>
+					                {{ form.date_of_first_appointment_nuc }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Date of Present Appointment<span class="text-danger">*</span></label>
+					                {{ form.date_of_present_appointment }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Date of Present Posting<span class="text-danger">*</span></label>
+					                {{ form.date_of_present_posting }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>State<span class="text-danger">*</span></label>
+					                {{ form.state }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Job Title<span class="text-danger">*</span></label>
+					                {{ form.job_title }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Department<span class="text-danger"></span></label>
+					                {{ form.department }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Employment Description<span class="text-danger">*</span></label>
+					                {{ form.employment_description }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Employment Type<span class="text-danger">*</span></label>
+					                {{ form.employment_type }}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Staff Category </label>
+                                    {{ form.staff_category }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Cadre</label>
+                                    {{ form.cadre }}
+                                </div>
+                            </div>
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="form-group">-->
+<!--                                    <label>Salary<span class="text-danger">*</span></label>-->
+<!--                                    {{ form.salary }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Create password<span class="text-danger">*</span></label>
+                                {{ form.password }}
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label>Repeat password<span class="text-danger">*</span></label>
+                                {{ form.confirm_password }}
+                            </div> <!-- form-group end.// -->
+				        </div>
+                        </div>
+
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+		</article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Have an account? <a href="{% url 'login' %}">Log In</a></p>
+    <br><br>
+<!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+
+</section>
+{% include 'includes/scripts.html' %}
+    </body>

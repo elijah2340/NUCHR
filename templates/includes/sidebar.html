@@ -1,0 +1,138 @@
+<!-- Sidebar -->
+{% if request.user.is_dhr %}
+            <div class="sidebar" id="sidebar">
+				<div class="sidebar-left slimscroll">
+					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+						<a class="nav-link" id="v-pills-dashboard-tab" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+							<span class="material-icons-outlined">
+								home
+							</span>
+						</a>
+						<a class="nav-link {% if '/hr/' in request.path %}active{% endif %}" id="v-pills-employees-tab" title="Employees" data-bs-toggle="pill" href="#v-pills-employees" role="tab" aria-controls="v-pills-employees" aria-selected="false">
+							<span class="material-icons-outlined">
+								people
+							</span>
+						</a>
+						<a class="nav-link" id="v-pills-settings-tab" title="Settings" data-bs-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+							<span class="material-icons-outlined">
+								settings
+							</span>
+						</a>
+					</div>
+				</div>
+
+				<div class="sidebar-right">
+					<div class="tab-content" id="v-pills-tabContent">
+					<div class="tab-pane fade {% if '/dashboard/' in request.path %}show active{% endif %}" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab"><p>Dashboard</p>
+							<ul>
+								<li>
+									<a href="{% url 'dashboard' %}" class="active">Admin Dashboard</a>
+								</li>
+
+							</ul>
+						</div>
+						<div class="tab-pane fade {% if '/department/' in request.path %}show active{% endif %}" id="v-pills-employees" role="tabpanel" aria-labelledby="v-pills-employees-tab">
+							<p>Employees</p>
+							<ul>
+								<li><a class="{% if '/employees/' in request.path %}active{% endif %}" href="{% url 'employees' %}">All Employees</a></li>
+								<li><a class="{% if '/departments/' in request.path %}active{% endif %}" href="{% url 'all_departments' %}">Departments</a></li>
+								<li><a class="{% if '/directors/' in request.path %}active{% endif %}" href="{% url 'directors' %}">Directors</a></li>
+								</ul>
+						</div>
+						<div class="tab-pane fade {% if '/accounts/' in request.path %}show active{% endif %}" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+							<p>Settings</p>
+							<ul>
+								<li><a class="{% if '/change-password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}"> Change Paassword </a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar -->
+{% elif request.user.is_director %}
+            <div class="sidebar" id="sidebar">
+				<div class="sidebar-left slimscroll">
+					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+						<a class="nav-link" id="v-pills-dashboard-tab" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+							<span class="material-icons-outlined">
+								home
+							</span>
+						</a>
+						<a class="nav-link {% if '/hr/' in request.path %}active{% endif %}" id="v-pills-employees-tab" title="Employees" data-bs-toggle="pill" href="#v-pills-employees" role="tab" aria-controls="v-pills-employees" aria-selected="false">
+							<span class="material-icons-outlined">
+								people
+							</span>
+						</a>
+						<a class="nav-link" id="v-pills-settings-tab" title="Settings" data-bs-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+							<span class="material-icons-outlined">
+								settings
+							</span>
+						</a>
+					</div>
+				</div>
+
+				<div class="sidebar-right">
+					<div class="tab-content" id="v-pills-tabContent">
+						<div class="tab-pane fade {% if '/dashboard/' in request.path %}show active{% endif %}" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+							<p>Dashboard</p>
+							<ul>
+								<li>
+									<a href="{% url 'dashboard' %}" class="{% if '/dashboard/' in request.path %}active{% endif %}">Dashboard</a>
+								</li>
+
+							</ul>
+						</div>
+						<div class="tab-pane fade {% if '/department/' in request.path %}show active{% endif %}" id="v-pills-employees" role="tabpanel" aria-labelledby="v-pills-employees-tab">
+							<p>Employees</p>
+							<ul>
+								<li><a class="{% if '/department_leave/' in request.path %}active{% endif %}" href="{% url 'department_leave' %}">Leaves</a></li>
+							</ul>
+						</div>
+						<div class="tab-pane fade {% if '/accounts/' in request.path %}show active{% endif %}" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+							<p>Settings</p>
+							<ul>
+								<li><a class="{% if '/change-password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}"> Change Paassword </a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+{% elif request.user.is_active %}
+            <div class="sidebar" id="sidebar">
+				<div class="sidebar-left slimscroll">
+					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+						<a class="nav-link" id="v-pills-dashboard-tab" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+							<span class="material-icons-outlined">
+								home
+							</span>
+						</a>
+						<a class="nav-link" id="v-pills-settings-tab" title="Settings" data-bs-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+							<span class="material-icons-outlined">
+								settings
+							</span>
+						</a>
+					</div>
+				</div>
+
+				<div class="sidebar-right">
+					<div class="tab-content" id="v-pills-tabContent">
+						<div class="tab-pane fade {% if '/hr/' not in request.path %}{% if '/user/' not in request.path %}show active{% endif %}{% endif %}" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+							<p>Dashboard</p>
+							<ul>
+								<li>
+									<a href="{% url 'dashboard' %}" class="{% if '/profile/' not in request.path %}active{% endif %}">Dashboard</a>
+								</li>
+
+							</ul>
+						</div>
+						<div class="tab-pane fade {% if '/user/' in request.path %}show active{% endif %}" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+							<p>Settings</p>
+							<ul>
+								<li><a class="{% if '/change-password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}"> Change Paassword </a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar -->
+{% endif %}

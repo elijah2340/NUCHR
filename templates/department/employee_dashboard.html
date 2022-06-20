@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <h3>Welcome {{ request.user.full_name }}</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="profile-view">
+                            <div class="profile-img-wrap">
+                                <div class="profile-img">
+                                    <img alt="" src="{{ staff.profile_picture.url}}">
+                                </div>
+                            </div>
+                            <div class="profile-basic">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="profile-info-left">
+                                            <h3 class="user-name m-t-0 mb-0">{{ staff.full_name }}</h3>
+                                            <h4 ><strong>Department: </strong>{{ staff.department }}</h4>
+                                            <small ><strong>Job Title: </strong>{{ staff.staff.job_title }}</small>
+                                            <div class="staff-id"> <strong>ID: </strong>{{ staff.staff.staff_no }}</div>
+                                            <div class="staff-id"> <strong>IPPS NO: </strong>{{ staff.staff.ipps_no }}</div>
+                                            <div class="small doj "><strong>Date OF Present Appointment: </strong>{{ staff.staff.date_of_present_appointment}}</div>
+                                            <div class="small doj "><strong>Department: </strong>{{ staff.staff.department}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <ul class="personal-info">
+                                            <li>
+                                                <div class="title">Phone:</div>
+                                                <div class="text">{{ staff.phone_number }}</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Email:</div>
+                                                <div class="text">{{ staff.staff.email}}</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Birthday:</div>
+                                                <div class="text">{{ staff.staff.date_of_birth }}</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Gender:</div>
+                                                <div class="text">{{ staff.staff.gender }}</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Reports to:</div>
+                                                <div class="text">
+                                                   <div class="avatar-box">
+                                                      <div class="avatar avatar-xs">
+                                                         <img src="{{ director_profile.profile_picture.url }}" alt="">
+                                                      </div>
+                                                   </div>
+                                                    {{ director }}
+
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="tab-content">
+            <!-- Profile Info Tab -->
+            <div id="emp_profile" class="pro-overview tab-pane fade show active">
+                <div class="row">
+                    <div class="col-md-6 d-flex">
+							<div class="card att-card flex-fill">
+								<div class="card-header">
+									<h3><i class="fas fa-user-times"></i> Your Leave</h3>
+                                    {% if leave %}
+                                    {% else %}
+									<a href="{% url 'leave' %}">Apply Leave</a>
+                                    {% endif %}
+								</div>
+                                {% if leave %}
+                                <div class="card-body leave-ln">
+									<ul>
+										<li>
+											<h5>{{ leave.date_applied }}</h5>
+											<h4>Application Date</h4>
+										</li>
+                                        <li>
+											<h3>{{ leave.leave_purpose }}</h3>
+											<h4>Leave Purpose</h4>
+										</li>
+                                        <li>
+											<h3>{{ leave.status }}</h3>
+											<h4>Leave Status</h4>
+										</li>
+									</ul>
+								</div>
+                                {% else %}
+                                <h4>No active leave application at this time</h4>
+                                {% endif %}
+								<div class="card-body leave-ln">
+                                     <h4>Previous applications: {{ previous }}</h4>
+                                      <table class="table table-striped custom-table mb-0 datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Application Date</th>
+                                                    <th>Status</th>
+                                                    <th>Purpose</th>
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            {% for application in previous_applications %}
+                                                <tr>
+                                                    <td>{{ application.date_applied }}</td>
+                                                    <td>{{ application.status }}</td>
+                                                    <td class="text-end ico-sec d-flex justify-content-end">
+                                                        {{application.leave_purpose}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+								</div>
+							</div>
+						</div>
+            </div>
+         </div>
+         </div>
+    </div>
+    <!-- Emergency Contact Modal -->
+    <div id="emergency_contact_modal" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Next of Kin</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'dashboard' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Primary </h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Name <span class="text-danger">*</span></label>
+                                            {{ form.name1 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Relationship <span class="text-danger">*</span></label>
+                                            {{ form.relationship1 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phone <span class="text-danger">*</span></label>
+                                            {{ form.phone_number1 }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Secondary</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Name <span class="text-danger">*</span></label>
+                                            {{ form.name2 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Relationship <span class="text-danger">*</span></label>
+                                            {{ form.relationship2 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phone <span class="text-danger">*</span></label>
+                                            {{ form.phone_number2 }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Emergency Contact Modal -->
+</div>
+
+
+{% endblock %}
