@@ -1,7 +1,7 @@
 from django import forms
 from .models import Leave, Department, Query
 from tempus_dominus.widgets import DatePicker
-from accounts.models import Account
+from accounts.models import StaffProfile
 
 
 class LeaveForm(forms.ModelForm):
@@ -71,7 +71,7 @@ class QueryForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
         if departments:
-            self.fields['staff'].queryset = Account.objects.filter(department=departments, is_director=False)
+            self.fields['staff'].queryset = StaffProfile.objects.filter(staff__department=departments, staff__is_director=False)
 
     def clean(self):
         cleaned_data = super(QueryForm, self).clean()
