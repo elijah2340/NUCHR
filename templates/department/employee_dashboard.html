@@ -144,6 +144,73 @@
 								</div>
 							</div>
 						</div>
+                    {% if query %}
+                    <div class="col-md-6 d-flex">
+							<div class="card att-card flex-fill">
+								<div class="card-header">
+									<h3><i class="fas fa-user-times"></i> Query</h3>
+
+								</div>
+                                <h4>You have been issued a query, do well to respond</h4>
+                                <div class="card-body leave-ln">
+
+                                      <table class="table table-striped custom-table mb-0 datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Subject</th>
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            {% for query in query %}
+                                                <tr>
+                                                    <td>{{ query.date}}</td>
+                                                    <td>{{ query.subject }}</td>
+                                                    <td><a href="{% url 'employee_query' query.id %}"><button class="btn btn-primary">View and Respond</button></a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+								</div>
+							</div>
+                    </div>
+                    {% endif %}
+                    {% if resolved_query %}
+                    <div class="col-md-6 d-flex">
+							<div class="card att-card flex-fill">
+								<div class="card-header">
+									<h3><i class="fas fa-user-times"></i> Query</h3>
+
+								</div>
+                                <h4>Check Query feedback</h4>
+                                <div class="card-body leave-ln">
+
+                                      <table class="table table-striped custom-table mb-0 datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Subject</th>
+                                                    <th>Purpose</th>
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            {% for query in resolved_query %}
+                                                <tr>
+                                                    <td>{{ query.date}}</td>
+                                                    <td>{{ query.subject }}</td>
+                                                    <td><a href="{% url 'employee_query' query.id %}"><button class="btn btn-primary">View warning/sanction</button></a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+								</div>
+							</div>
+                    </div>
+                    {% endif %}
             </div>
          </div>
          </div>

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Query{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <h3 >Query: {{ query.subject }}</h3>
+                    <h3 >Staff: {{ query.staff.staff }}</h3>
+                    <p><strong>Details: </strong>{{ query.details }}</p>
+
+                    <p><strong>Staff Response: </strong>{{ query.staff_response }}</p>
+                    <br>
+                    <form method="POST" action="{% url 'warn_staff' query.id %}">
+
+                        {% csrf_token %}
+
+                        <label>
+                            Warn Staff:
+                            <textarea name="warning"  rows="4" cols="100" placeholder="Send a Warning to staff" class="form-control"></textarea>
+                        </label><br>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <br>
+                    <form method="POST" action="{% url 'forward_query_to_es' query.id %}">
+
+                        {% csrf_token %}
+
+                        <label>
+                            Recommendation:
+                            <textarea name="recommendation" rows="4" cols="100" placeholder="Forward to esecutive secretary with recommendations" class="form-control"></textarea>
+                        </label><br>
+
+                        <button type="submit" class="btn btn-primary">Forward to E.S</button>
+                    </form>
+
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -32,3 +32,16 @@ class Leave(models.Model):
     sent_to_DHR = models.BooleanField(default=False)
     approved_by_DHR = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
+
+
+class Query(models.Model):
+    STATUS = (('SENT TO DHR', 'SENT TO DHR'), ('SENT TO ES', 'SENT TO ES'),
+              ('QUERY ISSUED', 'QUERY ISSUED'), ('STAFF RESPONDED', 'STAFF RESPONDED'), ('RESOLVED', 'RESOLVED'))
+    staff = models.ForeignKey("accounts.StaffProfile", on_delete=models.CASCADE)
+    subject = models.CharField(max_length=10000)
+    details = models.TextField()
+    staff_response = models.TextField(blank=True)
+    recommendation_to_es = models.TextField(blank=True)
+    sanction_or_warning = models.TextField(blank=True)
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(choices=STATUS, default='SENT TO DHR', max_length=255)

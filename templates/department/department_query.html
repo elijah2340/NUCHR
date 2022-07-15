@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Leave{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <h3>Query</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+<!--                            <h3 class="bl-text mb-1">0</h3>-->
+                            <a href="#" class="btn btn-success btn-add-emp" data-bs-toggle="modal" data-bs-target="#query" style="width: auto;"><i class="fas fa-plus"></i> Query Staff</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ all_query.count }}</h3>
+                            <h2>All Queries</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="staffs" class="table table-striped custom-table mb-0 datatable">
+                        <thead><h4>Queried Staffs</h4></thead>
+                        <thead>
+                            <tr>
+                                <th>Staff Name</th>
+                                <th>Staff ID</th>
+                                <th>Query Subject</th>
+                                <th>Date</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for query in all_query %}
+                            <tr>
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <a href="#" class="avatar"><img alt="" src="{{ query.staff.profile_picture.url }}"></a>
+                                        <a href="#">{{ query.staff.staff.full_name }} <span>{{ query.staff.staff.job_title }}</span></a>
+                                    </h2>
+                                </td>
+                                <td>{{ query.staff.staff.staff_no}}</td>
+                                <td>{{ query.subject }}</td>
+                                <td>{{ query.date }}</td>
+                                <td>{{ query.status }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="query" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Staff Query</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'department_query' %}" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Staff <span class="text-danger">*</span></label>
+<!--                                    <select name="staff" id="staff" class="form-select">-->
+<!--                                        {% for staff in staffs %}-->
+<!--                                        <option value="{{ staff }}">{{ staff }} | {{ staff }}</option>-->
+<!--                                        {% endfor %}-->
+<!--                                    </select>-->
+                                    {{ form.staff }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Query Subject</label>
+                                    {{ form.subject }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label >Details<span class="mandatory">*</span></label>
+					                {{ form.details }}
+                                </div>
+                            </div>
+				        </div>
+
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                        {{ form.errors }}
+                        {{ form.non_field_errors }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Query{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        {% if query.status == 'QUERY ISSUED' %}
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <h3 >Query: {{ query.subject }}</h3>
+                    <p><strong>Details: </strong>{{ query.details }}</p>
+                    <br>
+                    <form method="POST" action="{% url 'employee_query' query.id %}">
+
+                        {% csrf_token %}
+
+                        <label>
+                            Responst to Query:
+                            <textarea name="staff_response" required class="form-control"></textarea>
+                        </label><br>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <h3 >Query: {{ query.subject }}</h3>
+                    <p><strong>Details: </strong>{{ query.details }}</p>
+                    <br>
+                    <p>{{ query.sanction_or_warning }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

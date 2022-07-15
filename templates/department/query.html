@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Queries{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <h3>Leaves</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ pending_query.count }}</h3>
+                            <a href="{% url 'pending_query' %}"><h2>Pending Queries</h2></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ issued_query.count }}</h3>
+                            <h2>Issued Queries</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ responded_by_staff.count }}</h3>
+                            <a href="{% url 'responded_query' %}"><h2>Responded Queries</h2></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ sent_to_ec.count }}</h3>
+                            <h2>Sent To Executive Secretary</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                <div class="card flex-fill tickets-card">
+                    <div class="card-header">
+                        <div class="text-center w-100 p-3">
+                            <h3 class="bl-text mb-1">{{ resolved.count }}</h3>
+                            <h2>Resolved Queries</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="staffs" class="table table-striped custom-table mb-0 datatable">
+                        <thead><h4>Queried Staffs</h4></thead>
+                        <thead>
+                            <tr>
+                                <th>Staff Name</th>
+                                <th>Staff ID</th>
+                                <th>Query Subject</th>
+                                <th>Date</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for query in all_queries %}
+                            <tr>
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <a href="#" class="avatar"><img alt="" src="{{ query.staff.profile_picture.url }}"></a>
+                                        <a href="#">{{ query.staff.staff.full_name }} <span>{{ query.staff.staff.job_title }}</span></a>
+                                    </h2>
+                                </td>
+                                <td>{{ query.staff.staff.staff_no}}</td>
+                                <td>{{ query.subject }}</td>
+                                <td>{{ query.date }}</td>
+                                <td>{{ query.status }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

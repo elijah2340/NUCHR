@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Department, Leave
+from .models import Department, Leave, Query
 
 
 class DepartmentAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ class LeaveAdmin(admin.ModelAdmin):
 
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Leave, LeaveAdmin)
+admin.site.register(Query)

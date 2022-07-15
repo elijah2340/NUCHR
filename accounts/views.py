@@ -300,8 +300,8 @@ def forgotpasswordview(request):
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__iexact=email)
             current_site = get_current_site(request)
-            mail_subject = 'Please Activate Your Account'
-            message = render_to_string('user/reset_password_email.html', {
+            mail_subject = 'Reset Password Link'
+            message = render_to_string('accounts/reset_password_email.html', {
                 'user': user,
                 'domain': current_site,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -315,7 +315,7 @@ def forgotpasswordview(request):
         else:
             messages.error(request, 'Account with email ' + email + ' does not exist')
             return redirect('forgotpassword')
-    return render(request, 'user/forgotpassword.html')
+    return render(request, 'accounts/forgotpassword.html')
 
 
 def resetpassword_validateview(request, uidb64, token):

@@ -1,6 +1,7 @@
 from django import forms
-from .models import Leave, Department
+from .models import Leave, Department, Query
 from tempus_dominus.widgets import DatePicker
+from accounts.models import Account
 
 
 class LeaveForm(forms.ModelForm):
@@ -58,3 +59,19 @@ class NewDepartmentForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(NewDepartmentForm, self).clean()
+
+
+class QueryForm(forms.ModelForm):
+    class Meta:
+        model = Query
+        fields = ['staff', 'subject', 'details']
+
+    def __init__(self, departments, *args, **kwargs):
+        super(QueryForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+        if departments:
+            self.fields['staff'].queryset = Account.objects.filter(department=departments, is_director=False)
+
+    def clean(self):
+        cleaned_data = super(QueryForm, self).clean()

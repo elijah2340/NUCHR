@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Query{% endblock %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid pb-0">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-head-box">
+                    {% include 'includes/alert.html' %}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <h3 >Query: {{ query.subject }}</h3>
+                    <h3 >Staff: {{ query.staff.staff }}</h3>
+                    <p><strong>Details: </strong>{{ query.details }}</p>
+
+                    <p><strong>Staff Response: </strong>{{ query.staff_response }}</p>
+                    <br>
+                    <form method="POST" action="{% url 'sanction_staff' query.id %}">
+
+                        {% csrf_token %}
+
+                        <label>
+                            Sanction Staff:
+                            <textarea name="sanction"  rows="4" cols="100" placeholder="Send a sanction to staff" class="form-control"></textarea>
+                        </label><br>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -19,9 +19,11 @@
                         <li class="breadcrumb-item active">Employee</li>
                     </ul>
                 </div>
+                {% if request.user.is_admin %}
                 <div class="col-auto float-end ms-auto">
                     <a href="#" class="btn add-btn" data-bs-toggle="modal" data-bs-target="#add_employee"><i class="fa fa-plus"></i> Add Employee</a>
                 </div>
+                {% endif %}
             </div>
         </div>
         <!-- /Page Header -->

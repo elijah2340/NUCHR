@@ -12,7 +12,7 @@
             <div class="col-md-12">
                 <div class="page-head-box">
                     {% include 'includes/alert.html' %}
-                    <h3>Welcome {{ request.user.full_name}}!</h3>
+                    <h3>Welcome Admin!</h3>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -52,9 +52,9 @@
                 <div class="card flex-fill tickets-card">
                     <div class="card-header">
                         <div class="text-center w-100 p-3">
-                            <a href="{% url 'employees' %}">
-                            <h3 class="bl-text mb-1">{{ employees_count }}</h3>
-                            <h2>Other Employees</h2>
+                            <a href="{% url 'staffs' %}">
+                            <h3 class="bl-text mb-1">{{ all_staffs.count }}</h3>
+                            <h2>All Staffs</h2>
                             </a>
                         </div>
                     </div>
@@ -64,21 +64,9 @@
                 <div class="card flex-fill tickets-card">
                     <div class="card-header">
                         <div class="text-center w-100 p-3">
-                            <a href="{% url 'all_query' %}">
+                            <a href="{% url 'es_pending_query' %}">
                             <h3 class="bl-text mb-1">{{ query.count }}</h3>
-                            <h2>Queries</h2>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="card flex-fill tickets-card">
-                    <div class="card-header">
-                        <div class="text-center w-100 p-3">
-                            <a href="{% url 'all_leave' %}">
-                            <h3 class="bl-text mb-1">{{ leave.count }}</h3>
-                            <h2>Leave application(s)</h2>
+                            <h2>Pending Queries</h2>
                             </a>
                         </div>
                     </div>

@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from accounts.models import Account, Director, StaffProfile
-from .forms import LeaveForm, NewDepartmentForm
-from .models import Department, Leave
+from .forms import LeaveForm, NewDepartmentForm, QueryForm
+from .models import Department, Leave, Query
 from django.contrib import messages, auth
 from django.db.models import Q
 import datetime
@@ -11,7 +11,7 @@ import datetime
 @login_required(login_url='login')
 def dashboard(request):
     if request.user.has_perm("is_admin"):
-        employees = StaffProfile.objects.filter(staff__is_director=False, staff__is_es=False,
+        employees = StaffProfile.objects.filter(staff__is_director=False,
                                                 staff__is_dhr=False).order_by('staff__first_name')
         departments = Department.objects.all()
         employees_count = employees.count()
@@ -28,12 +28,39 @@ def dashboard(request):
         }
 
         return render(request, 'department/admin-dashboard.html', context)
+    elif request.user.is_es:
+        employees = StaffProfile.objects.filter(staff__is_director=False,
+                                                staff__is_dhr=False).order_by('staff__first_name')
+        departments = Department.objects.all()
+        employees_count = employees.count()
+        departments_count = departments.count()
+        directors = Director.objects.all()
+        user = StaffProfile.objects.get(staff=request.user)
+        all_staffs = StaffProfile.objects.all()
+        try:
+            query = Query.objects.filter(status='SENT TO ES')
+        except Query.DoesNotExist:
+            query = None
+        context = {
+            'employees_count': employees_count,
+            'departments_count': departments_count,
+            'directors': directors,
+            'user': user,
+            'all_staffs': all_staffs,
+            'query': query
+        }
+
+        return render(request, 'department/es-dashboard.html', context)
     elif request.user.is_dhr:
         employees = StaffProfile.objects.filter(staff__is_director=False, staff__is_es=False, staff__is_dhr=False)
         departments = Department.objects.all()
         employees_count = employees.count()
         departments_count = departments.count()
         directors = Director.objects.all()
+        try:
+            query = Query.objects.filter((~Q(status='RESOLVED')))
+        except Query.DoesNotExist:
+            query = None
         try:
             leave = Leave.objects.filter(status='SENT TO DHR', sent_to_DHR=True)
         except Leave.DoesNotExist:
@@ -44,7 +71,8 @@ def dashboard(request):
             'departments_count': departments_count,
             'directors': directors,
             'leave': leave,
-            'user': user
+            'user': user,
+            'query': query
         }
 
         return render(request, 'department/dhr_dashboard.html', context)
@@ -75,6 +103,8 @@ def dashboard(request):
         return render(request, 'department/director_dashboard.html', context)
     else:
         staff = StaffProfile.objects.get(staff=request.user)
+        query = Query.objects.filter((Q(status='QUERY ISSUED') & (~Q(status='STAFF RESPONDED') | Q(status='SENT TO ES'))), staff=staff)
+        resolved_query = Query.objects.filter(status='RESOLVED')
         try:
             director = Director.objects.get(staff__department=staff.staff.department)
         except Director.DoesNotExist:
@@ -104,10 +134,212 @@ def dashboard(request):
             'leave': leave,
             'previous_applications': previous_applications,
             'previous': previous,
-            'user': user
+            'user': user,
+            'query': query,
+            'resolved_query': resolved_query
 
         }
         return render(request, 'department/employee_dashboard.html', context)
+
+def department_query(request):
+    user = StaffProfile.objects.get(staff=request.user)
+    director = Director.objects.get(staff=request.user)
+    department = Department.objects.get(name=director.staff.department)
+    try:
+        all_query = Query.objects.filter(staff__staff__department=department).order_by('-date')
+    except Query.DoesNotExist:
+        all_query = None
+    try:
+        staffs = Account.objects.filter(department=department, is_director=False)
+    except Account.DoesNotExist:
+        staffs = None
+    try:
+        staff_profile = StaffProfile.objects.filter(staff__in=staffs)
+    except StaffProfile.DoesNotExist:
+        staff_profile = None
+    if request.method == 'POST':
+        form = QueryForm(department, request.POST)
+        if form.is_valid():
+            staff = form.cleaned_data['staff']
+            subject = form.cleaned_data['subject']
+            details = form.cleaned_data['details']
+            data = Query()
+            data.staff = staff
+            data.details = details
+            data.subject = subject
+            data.save()
+            messages.success(request, 'Query sucessfully sent to DHR')
+            return redirect('department_query')
+        else:
+            messages.error(request, 'Query Failed, please check all fields and try again')
+            form = QueryForm(departments=department)
+            context = {
+                'form': form,
+                'user': user,
+                'staffs': staffs,
+                'staff_profile': staff_profile,
+                'all_query': all_query,
+            }
+            return render(request, 'department/department_query.html', context)
+    else:
+        form = QueryForm(departments=department)
+        context = {
+            'user': user,
+            'staffs': staffs,
+            'staff_profile': staff_profile,
+            'form': form,
+            'all_query': all_query,
+        }
+
+        return render(request, 'department/department_query.html', context)
+
+def all_query(request):
+    user = StaffProfile.objects.get(staff=request.user)
+    pending_query = Query.objects.filter((Q(status='SENT TO DHR') & ~Q(status='QUERY ISSUED')))
+    issued_query = Query.objects.filter((Q(status='QUERY ISSUED') & (~Q(status='STAFF RESPONDED') | Q(status='SENT TO ES'))))
+    responded_by_staff = Query.objects.filter((Q(status='STAFF RESPONDED') & (~Q(status='RESOLVED') | ~Q(status='SENT TO ES'))))
+    sent_to_ec = Query.objects.filter(status='SENT TO ES')
+    resolved = Query.objects.filter(status='RESOLVED')
+    all_queries = Query.objects.all()
+
+    context = {
+        'user': user,
+        'issued_query': issued_query,
+        'responded_by_staff': responded_by_staff,
+        'sent_to_ec': sent_to_ec,
+        'resolved': resolved,
+        'pending_query': pending_query,
+        'all_queries': all_queries
+    }
+
+    return render(request, 'department/query.html', context)
+
+def pending_query(request):
+    user = StaffProfile.objects.get(staff=request.user)
+    pending = Query.objects.filter((Q(status='SENT TO DHR') & ~Q(status='QUERY ISSUED')))
+
+    context = {
+        'user': user,
+        'pending_query': pending
+    }
+
+    return render(request, 'department/pending_query.html', context)
+
+def es_pending_query(request):
+    user = StaffProfile.objects.get(staff=request.user)
+    pending = Query.objects.filter(status='SENT TO ES' )
+
+    context = {
+        'user': user,
+        'pending_query': pending
+    }
+
+    return render(request, 'department/es_pending_query.html', context)
+
+def responded_query(request):
+    user = StaffProfile.objects.get(staff=request.user)
+    responded = Query.objects.filter((Q(status='STAFF RESPONDED') & (~Q(status='RESOLVED') | ~Q(status='SENT TO ES'))))
+
+    context = {
+        'user': user,
+        'responded_query': responded
+    }
+
+    return render(request, 'department/responded_query.html', context)
+
+def responded_query_details(request, id):
+    query = Query.objects.get(id=id)
+    context = {
+        'query': query
+    }
+    return render(request, 'department/responded_query_details.html', context )
+
+def es_query_details(request, id):
+    query = Query.objects.get(id=id, status='SENT TO ES')
+    context = {
+        'query': query
+    }
+    return render(request, 'department/es_query_details.html', context )
+
+def warn_staff(request, id):
+    query = Query.objects.get(id=id)
+    warning = request.POST['warning']
+    query.sanction_or_warning = warning
+    query.status = 'RESOLVED'
+    query.save()
+    messages.success(request, "warning sucessfully sent to staff")
+    return redirect('dashboard')
+
+
+def sanction_staff(request, id):
+    query = Query.objects.get(id=id)
+    sanction = request.POST['sanction']
+    query.sanction_or_warning = sanction
+    query.status = 'RESOLVED'
+    query.save()
+    messages.success(request, 'sanction successfully sent to staff')
+    return redirect('dashboard')
+
+
+def forward_query_to_es(request, id):
+    query = Query.objects.get(id=id)
+    recommendation = request.POST['recommendation']
+    query.recommendation_to_es = recommendation
+    query.status = 'SENT TO ES'
+    query.save()
+    return redirect('dashboard')
+
+
+def issue_query(request, id):
+    query = Query.objects.get(id=id)
+    query.status = 'QUERY ISSUED'
+    query.save()
+    return redirect('pending_query')
+
+def employe_response_query(request, id):
+    user = StaffProfile.objects.get(staff=request.user)
+    query = Query.objects.get(id=id, staff=user)
+    if request.method == 'POST':
+        response = request.POST['staff_response']
+        query.staff_response = response
+        query.status = 'STAFF RESPONDED'
+        query.save()
+        return redirect('dashboard')
+    else:
+        context = {
+            'query': query
+        }
+    return render(request, 'department/employee_query.html', context)
+
+
+# @login_required(login_url='login')
+# def query(request):
+#     if request.method == 'POST':
+#         form = QueryForm(request.POST)
+#         if form.is_valid():
+#             staff = form.cleaned_data['staff']
+#             subject = form.cleaned_data['subject']
+#             details = form.cleaned_data['details']
+#
+#             data = Query()
+#             data.staff = staff
+#             data.details = details
+#             data.subject = subject
+#             messages.success(request, 'Query sucessfully sent to DHR')
+#             return redirect('query')
+#         else:
+#             messages.error(request, 'Query Failed, please check all fields and try again')
+#             form = QueryForm()
+#             context = {
+#                 'form': form
+#             }
+#             return render(request, 'department/query_form.html', context)
+#     else:
+#         form = QueryForm()
+#         context = {
+#             'form': form
+#         }
+#         return render(request, 'department/query_form.html', context)
 
 
 @login_required(login_url='login')
@@ -173,7 +405,6 @@ def department_leave(request):
     }
 
     return render(request, 'department/department_leave.html', context)
-
 
 def all_leave(request):
     user = StaffProfile.objects.get(staff=request.user)
@@ -281,7 +512,7 @@ def allDepartments(request):
 
 
 def allDirectors(request):
-    if request.user.is_dhr or request.user.has_perm("is_admin"):
+    if request.user.is_dhr or request.user.has_perm("is_admin") or request.user.is_es:
         user = StaffProfile.objects.get(staff=request.user)
         directors = Director.objects.all().order_by('-staff__first_name')
         context = {
